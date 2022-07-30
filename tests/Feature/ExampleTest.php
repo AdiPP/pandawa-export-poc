@@ -18,4 +18,12 @@ class ExampleTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    public function testExportProduct(): void
+    {
+        $response = $this->get('/api/v1/export-products');
+
+        $response->assertDownload('products.csv');
+        $response->assertStatus(200);
+    }
 }

@@ -3,3 +3,9 @@ ping:
     methods: [get]
     path: ping
     presenter: ping
+
+"acme::product.export":
+    type: presenter
+    methods: [get]
+    path: export-products
+    presenter: "acme::product.export"
