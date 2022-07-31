@@ -6,6 +6,7 @@ namespace Acme\Api\Presenter;
 
 
 use Acme\Product\Exports\ProductsExport;
+use Acme\Product\Repository\ProductRepository;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -20,6 +21,12 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
  */
 class ExportProductPresenter implements PresenterInterface, NameablePresenterInterface
 {
+    public function __construct(
+        private ProductRepository $productRepository,
+    )
+    {
+    }
+
     public static function name(): string
     {
         return "acme::product.export";
@@ -27,19 +34,10 @@ class ExportProductPresenter implements PresenterInterface, NameablePresenterInt
 
     public function render(Request $request): BinaryFileResponse
     {
+        $products = $this->productRepository->findAll();
+
         return  Excel::download(
-            new ProductsExport([
-                [
-                    'id' => 1,
-                    'title' => 'Product 1',
-                    'price' => 10000
-                ],
-                [
-                    'id' => 2,
-                    'title' => 'Product 2',
-                    'price' => 15000
-                ],
-            ]),
+            new ProductsExport($products),
             'products.csv',
             Format::CSV,
             [
