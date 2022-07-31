@@ -34,9 +34,12 @@ class ExportProductPresenter implements PresenterInterface, NameablePresenterInt
 
     public function render(Request $request): BinaryFileResponse
     {
-        $products = $this->productRepository->findAll();
+        $priceGte = $request['price_gte'];
+        $products = $this->productRepository->findAllExport(
+            null !== $priceGte ? (int) $priceGte : null
+        );
 
-        return  Excel::download(
+        return Excel::download(
             new ProductsExport($products),
             'products.csv',
             Format::CSV,
