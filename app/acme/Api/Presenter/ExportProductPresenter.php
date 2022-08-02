@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Acme\Api\Presenter;
 
 
+use Acme\Product\DTO\FindAllProductsExport;
 use Acme\Product\Exports\ProductsExport;
 use Acme\Product\Repository\ProductRepository;
 use Illuminate\Contracts\Support\Responsable;
@@ -34,9 +35,10 @@ class ExportProductPresenter implements PresenterInterface, NameablePresenterInt
 
     public function render(Request $request): BinaryFileResponse
     {
-        $priceGte = $request['price_gte'];
+        $priceGte = $request->query->get('price_gte');
+
         $products = $this->productRepository->findAllExport(
-            null !== $priceGte ? (int) $priceGte : null
+            new FindAllProductsExport($priceGte ? (int) $priceGte : null)
         );
 
         return Excel::download(

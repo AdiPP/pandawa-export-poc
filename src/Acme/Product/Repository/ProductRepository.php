@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Acme\Product\Repository;
 
 
+use Acme\Product\Contract\FindAllProductsExport;
 use Pandawa\Component\Ddd\Collection;
 use Pandawa\Component\Ddd\Repository\Repository;
 
@@ -13,13 +14,13 @@ use Pandawa\Component\Ddd\Repository\Repository;
  */
 class ProductRepository extends Repository
 {
-    public function findAllExport(?int $priceGte = null): Collection
+    public function findAllExport(FindAllProductsExport $contract): Collection
     {
         $qb = $this->createQueryBuilder();
 
         $qb->select('products.*');
 
-        if ($priceGte) {
+        if ($priceGte = $contract->getPriceGte()) {
             $qb->where('products.price', '>=', $priceGte);
         }
 
